@@ -1,0 +1,15 @@
+---
+title: '1'
+output: html_document
+date: "2024-10-22"
+---
+```{r}
+library(terra)
+library(here)
+jan<-terra::rast(here("wc2.1_5m_tavg", "wc2.1_5m_tavg_01.tif"))
+# have a look at the raster layer jan
+plot(jan)
+```
+
+
+
