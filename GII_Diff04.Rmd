@@ -1,0 +1,58 @@
+---
+title: "RHomework4"
+output: html_document
+date: "2024-10-24"
+---
+
+```{r}
+library(leaflet)
+library(geojsonio)
+library(sf)
+library(here)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(ggspatial) 
+
+worlddata <- st_read(here("Homework4World_Countries_(Generalized)_9029012925078512962.geojson"))
+
+mycsv2010 <-  read_csv(here("Homework4hdr-data 2010.csv"))
+mycsv2010 <- mycsv2010 %>% rename(value_2010 = value)
+
+mycsv2019 <-  read_csv(here("Homework4hdr-data 2019.csv"))
+mycsv2019 <- mycsv2019 %>% rename(value_2019 = value)
+
+merged_data <- left_join(mycsv2010, mycsv2019, by = "country")
+
+merged_data <- merged_data %>%
+  mutate(diff = value_2019 - value_2010)
+
+merged_data <- merged_data %>% rename(COUNTRY = country)
+
+Final_data <- left_join(worlddata, merged_data, by = "COUNTRY")
+Final_data$diff <- round(Final_data$diff, 2)
+
+Final_data$diff <- ifelse(is.na(Final_data$diff), "No Data", Final_data$diff)
+
+
+
+map111 <- ggplot() +
+  geom_sf(data = Final_data, aes(fill = as.numeric(diff))) +   # 基于某个数值列进行填充
+  scale_fill_gradient(low = "red", high = "green", na.value = "gray") + # 红色到绿色渐变，并设置NA值为灰色
+  
+  # 6. 添加比例尺
+  annotation_scale(location = "bl", width_hint = 0.5) +
+  
+  # 7. 添加指北针
+  annotation_north_arrow(location = "bl", which_north = "true", 
+                         style = north_arrow_fancy_orienteering) +
+  
+  # 8. 设置图例
+  labs(fill = "GII difference from 2010 to 2019")  # 自定义图例标题
+
+# 9. 显示地图
+print(map111)
+```
+
+
+
