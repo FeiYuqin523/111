@@ -45,7 +45,7 @@ Final_data <- left_join(worlddata, merged_data, by = "COUNTRY")
 Final_data$diff <- round(Final_data$diff, 2)
 Final_data$diff <- ifelse(is.na(Final_data$diff), "No Data", Final_data$diff)
 map111 <- ggplot() +
-  geom_sf(data = Final_data, aes(fill = as.numeric(diff))) +   # 基于某个数值列进行填充
+  geom_sf(data = Final_data, aes(fill = as.numeric(diff))) +  
   scale_fill_gradient(low = "red", high = "green", na.value = "gray") + #Red to green, NA value grey
    # Scale bar
   annotation_scale(location = "bl", width_hint = 0.5) +
@@ -53,7 +53,7 @@ map111 <- ggplot() +
   annotation_north_arrow(location = "bl", which_north = "true", 
                          style = north_arrow_fancy_orienteering) +
    # Legend
-  labs(fill = "GII difference from 2010 to 2019")  # 自定义图例标题
+  labs(fill = "GII difference from 2010 to 2019")  
    # plot the map
 print(map111)
 # Scale on map varies by more than 10%, scale bar may be inaccurate
