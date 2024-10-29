@@ -16,7 +16,7 @@ library(dplyr)
 library(ggplot2)
 library(ggspatial) 
 ```
-
+no data available
 Read data
 ```{r}
 # read csv data and geojson data
