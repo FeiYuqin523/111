@@ -1,6 +1,8 @@
 ---
 title: "RHomework4"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 date: "2024-10-24"
 ---
 

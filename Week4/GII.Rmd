@@ -1,0 +1,62 @@
+---
+title: "GII"
+output: html_document
+date: "2024-10-31"
+---
+
+Library
+```{r}
+library(leaflet)
+library(geojsonio)
+library(sf)
+library(here)
+library(tidyverse)
+library(dplyr)
+library(ggplot2)
+library(ggspatial) 
+```
+
+Read data
+```{r}
+#read csv data and geojson data
+worlddata <- st_read(here("week4","Homework4World_Countries_(Generalized)_9029012925078512962.geojson"))
+mycsv2010 <-  read_csv(here("week4","Homework4hdr-data 2010.csv"))
+mycsv2010 <- mycsv2010 %>% rename(value_2010 = value)
+mycsv2019 <-  read_csv(here("week4","Homework4hdr-data 2019.csv"))
+mycsv2019 <- mycsv2019 %>% rename(value_2019 = value)
+```
+Process data
+
+```{r}
+#merge data and calculate the GII difference(2010-2019)
+merged_data <- left_join(mycsv2010, mycsv2019, by = "country")
+
+merged_data <- merged_data %>%
+  mutate(diff = value_2019 - value_2010)
+
+merged_data <- merged_data %>% rename(COUNTRY = country)
+```
+```
+Plot the map
+````
+```{r}
+#join data and plot the map
+Final_data <- left_join(worlddata, merged_data, by = "COUNTRY")
+Final_data$diff <- round(Final_data$diff, 2)
+Final_data$diff <- ifelse(is.na(Final_data$diff), "No Data", Final_data$diff)
+map111 <- ggplot() +
+  geom_sf(data = Final_data, aes(fill = as.numeric(diff))) +  
+  scale_fill_gradient(low = "red", high = "green", na.value = "gray") + #Red to green, NA value grey
+   # Scale bar
+  annotation_scale(location = "bl", width_hint = 0.5) +
+   # North arrow
+  annotation_north_arrow(location = "bl", which_north = "true", 
+                         style = north_arrow_fancy_orienteering) +
+   # Legend
+  labs(fill = "GII difference from 2010 to 2019")  
+   # plot the map
+print(map111)
+# Scale on map varies by more than 10%, scale bar may be inaccurate
+```
+
+
